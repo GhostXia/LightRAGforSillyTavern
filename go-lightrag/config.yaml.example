@@ -1,0 +1,68 @@
+# Go-LightRAG 配置文件示例
+
+# 服务器配置
+server:
+  host: "0.0.0.0"  # 服务器监听地址，0.0.0.0表示监听所有网络接口
+  port: 9621       # 服务器端口
+  api_key: ""      # API密钥，留空表示不启用认证
+
+# RAG系统配置
+rag:
+  working_dir: "./rag_storage"  # RAG工作目录，用于存储索引和缓存
+  input_dir: "./inputs"         # 输入文档目录
+  max_tokens: 32768             # 最大token数量
+  max_embed_tokens: 8192        # 最大嵌入token数量
+  chunk_size: 1024              # 文本分块大小
+  chunk_overlap: 128            # 文本分块重叠大小
+  top_k: 60                     # 检索结果数量
+  entity_summary_size: 4000     # 实体摘要大小
+
+# LLM配置
+llm:
+  provider: "openai"                      # 提供商：openai, ollama等
+  model: "gpt-4o-mini"                    # 模型名称
+  api_key: "sk-your-openai-api-key"       # 替换为您的OpenAI API密钥
+  base_url: "https://api.openai.com/v1"   # API基础URL
+
+# 嵌入模型配置
+embedding:
+  provider: "openai"                      # 提供商：openai, ollama等
+  model: "text-embedding-3-large"         # 模型名称
+  api_key: "sk-your-openai-api-key"       # 替换为您的OpenAI API密钥
+  base_url: "https://api.openai.com/v1"   # API基础URL
+
+# 存储配置
+storage:
+  vector_type: "memory"  # 向量存储类型：memory(内存), postgres, milvus等
+  kv_type: "memory"      # KV存储类型：memory(内存), postgres, mongo等
+  graph_type: "memory"   # 图存储类型：memory(内存), neo4j, postgres等
+  
+  # Neo4j配置（当graph_type为"neo4j"时使用）
+  neo4j:
+    uri: "bolt://localhost:7687"
+    username: "neo4j"
+    password: "password"
+    database: "neo4j"
+  
+  # PostgreSQL配置（当使用postgres作为任意存储类型时使用）
+  postgres:
+    host: "localhost"
+    port: 5432
+    username: "postgres"
+    password: "password"
+    database: "lightrag"
+    ssl_mode: "disable"
+  
+  # MongoDB配置（当kv_type为"mongo"时使用）
+  mongo:
+    uri: "mongodb://localhost:27017"
+    database: "lightrag"
+  
+  # Milvus配置（当vector_type为"milvus"时使用）
+  milvus:
+    host: "localhost"
+    port: 19530
+
+# 日志配置
+log:
+  level: "info"  # 日志级别：debug, info, warn, error
