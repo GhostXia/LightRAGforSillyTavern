@@ -1,81 +1,74 @@
-<center><h2>🚀 LightRAG: For OpenAI Response Standard</h2></center>
+# Go-LightRAG
 
+## 项目简介
 
-![image.png](https://s2.loli.net/2024/12/18/uQAtk4C7Zm9IXVF.png)
+这是使用Go语言重构的LightRAG项目，旨在提供更高效、更简洁的RAG（检索增强生成）系统实现。原始项目基于Python，本项目保留了核心功能，同时利用Go语言的并发性能和编译优势，提供更好的性能和更简单的部署体验。
 
-This repository hosts the code of LightRAG. The structure of this code is based on [nano-graphrag](https://github.com/gusye1234/nano-graphrag).
-![image.png](https://s2.loli.net/2024/12/18/yi1chsHWmCXTNrA.png)
-</div>
+## 重构目标
 
-### 写在最开头
-非常感谢香港大学团队（[@HKUDS](https://github.com/HKUDS "@HKUDS")）的工作，没有他们就没有这一切。没有他们的无私开源，就不会有现在这个项目——我们只是在他们开垦的一片天地中上做了点微小的工作。
+1. **保留核心功能**：维持原LightRAG的核心RAG功能和OpenAI兼容的API接口
+2. **提升性能**：利用Go语言的并发特性提高系统性能
+3. **简化部署**：编译为单一二进制文件，无需复杂的依赖管理
+4. **优化内存使用**：更高效的内存管理
+5. **保持API兼容性**：确保与原项目的API兼容，方便迁移
 
-### 本项目的目标
-#### 1.支持OpenAI标准响应格式，以便将LightRAG集成至更多地方
-#### 2.方便管理RAG系统
+## 项目结构
 
-### 本项目适用于？
-#### 想为大模型搭建高效准确的知识库，但是不需要多余的功能，内存不敏感，低并发条件
-
-### 我们做了什么？
-#### 1.将响应格式写为OpenAI标准响应格式，并且支持Prefill
-#### 2.多文件的构建与插入图谱
-#### 3.热切换模型，自动填入模型名称与Max_tokens
-#### 4.召回率保证：使用一个小trick保证与关键词高度相关的实体和联系的信息作为Prompt的一部分，使其不容易被海量信息挤占
-#### 5.增量检索：已存在于向量库中的实体名字/已存在于完成提取的chunk中的实体名字，将作为Prompt的一部分供大模型进行参考，使得大模型能够更有效地提取实体。
-#### 6.支持来自问答/聊天系统的Prompt，其将与RAG自带的Prompt进行结合并输出至LLM
-#### 7.简单但全面的前端，方便管理RAG系统：文档上传，图谱管理
-
-### 前端一览
-![image.png](https://s2.loli.net/2024/12/18/XDjilpqvQBruVtE.png)
-
-![image.png](https://s2.loli.net/2024/12/18/T7U6brEgpstDR3q.png)
-
-![image.png](https://s2.loli.net/2024/12/18/CLW7dhxicOepyFR.png)
-
-### 未来？
-#### 1.SubSetting：添加次要设置，为用户实现更具性价比的图谱构建
-#### 2.More Prompt：实时切换Prompt
-#### 3.HTML to Graph
-#### And more...
-
-### 如何使用？
-#### 0.如果你会使用诸如Anaconda的管理工具，安装步骤可以直接不用看（但别忘了下面这句）
-```python
-pip install -e .
 ```
-#### 1.在项目的根目录中找到setup.bat并双击打开
-#### 2.待项目的依赖包安装完毕之后，双击打开Start.bat（首次使用前需要手动在.env文件中填入相对应的信息，否则无法启动，当然也可以运行RunWeb.bat来打开前端并通过前端进行设置环境变量）
-#### 3.待两个cmd窗口都打开并运行之后，可在浏览器进入8848端口，便能看到管理前端
-#### 4.在前端的侧边栏内填入相关信息，填入完毕即可刷新模型信息
-#### 5.在文件管理这一页中对你的文件进行管理。构建图谱将会构建全新的一个图谱，插入图谱则是会将文件中的信息插入至已有的图谱中。
-#### 6.在图谱管理页面，记得将生成的图谱文件夹或者上传之后新建的文件夹设置为环境变量
-#### 7.一切就绪，现在可以将LightRAG的后端地址填入你所使用的任何大模型问答/聊天前端。
-
-### 也许会有点小问题？
-由于我们才粗学浅，本项目不可避免地会有各种奇奇怪怪的bug，就连功能解耦都没有写好。所以遇到了bug请尽量告诉我们。
-
-### 关于我们
-关于我们自己......没什么好说的，大多是学生。所以如果有什么建议甚至是Pull Request，我们很欢迎。
-
-## Contribution
-
-Thank you to all our contributors!
-
-<a href="https://github.com/HKUDS/LightRAG/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HKUDS/LightRAG" />
-</a>
-
-## 🌟Citation
-
-```python
-@article{guo2024lightrag,
-title={LightRAG: Simple and Fast Retrieval-Augmented Generation},
-author={Zirui Guo and Lianghao Xia and Yanhua Yu and Tu Ao and Chao Huang},
-year={2024},
-eprint={2410.05779},
-archivePrefix={arXiv},
-primaryClass={cs.IR}
-}
+go-lightrag/
+├── cmd/                    # 命令行工具
+│   └── server/             # API服务器入口
+├── internal/               # 内部包
+│   ├── api/                # API实现
+│   ├── config/             # 配置管理
+│   ├── embedding/          # 嵌入模型接口
+│   ├── kg/                 # 知识图谱实现
+│   │   ├── neo4j/          # Neo4j实现
+│   │   ├── postgres/       # PostgreSQL实现
+│   │   └── memory/         # 内存实现
+│   ├── llm/                # LLM接口
+│   ├── storage/            # 存储接口
+│   │   ├── vector/         # 向量存储
+│   │   └── kv/             # KV存储
+│   └── utils/              # 工具函数
+├── pkg/                    # 公共包
+│   ├── lightrag/           # 核心RAG实现
+│   └── models/             # 数据模型
+├── web/                    # Web界面
+│   ├── static/             # 静态资源
+│   └── templates/          # 模板文件
+├── go.mod                  # Go模块定义
+└── go.sum                  # 依赖校验
 ```
-**Thank you for your interest in our work!**
+
+## 技术栈
+
+- **Web框架**：Gin
+- **数据库**：支持多种后端（Neo4j、PostgreSQL、内存实现等）
+- **向量数据库**：支持多种实现
+- **配置管理**：Viper
+- **日志**：zap
+- **API文档**：Swagger
+
+## 实现计划
+
+1. 设计核心接口和数据结构
+2. 实现基础存储层（向量存储、KV存储）
+3. 实现LLM和嵌入模型接口
+4. 实现知识图谱处理
+5. 实现核心RAG逻辑
+6. 实现API服务器
+7. 实现Web界面
+8. 测试和优化
+
+## 与原项目的区别
+
+- 使用Go语言的强类型系统提供更好的代码可维护性
+- 利用Go的goroutine和channel提供更好的并发性能
+- 编译为单一二进制文件，简化部署
+- 更高效的内存管理
+- 保持API兼容性，方便迁移
+
+## 使用方法
+
+待项目完成后补充

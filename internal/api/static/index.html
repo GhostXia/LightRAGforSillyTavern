@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go-LightRAG - 轻量级RAG系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Go-LightRAG</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#documents">文档管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#chat">聊天</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#settings">设置</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">欢迎使用 Go-LightRAG</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Go-LightRAG 是一个轻量级的检索增强生成 (RAG) 系统，使用 Go 语言实现。</p>
+                        <p>主要功能：</p>
+                        <ul>
+                            <li>文档管理：上传、查看和删除文档</li>
+                            <li>智能聊天：基于文档内容的智能问答</li>
+                            <li>系统设置：配置 LLM、嵌入模型和存储选项</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4" id="documents">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">文档管理</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="fileUpload" class="form-label">上传文档</label>
+                            <input class="form-control" type="file" id="fileUpload" multiple>
+                            <button class="btn btn-primary mt-2" id="uploadBtn">上传</button>
+                        </div>
+                        <div class="mt-4">
+                            <h6>文档列表</h6>
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="documentTable">
+                                    <thead>
+                                        <tr>
+                                            <th>文件名</th>
+                                            <th>大小</th>
+                                            <th>上传时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- 文档列表将通过JavaScript动态加载 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4" id="chat">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">智能聊天</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chat-container" id="chatMessages">
+                            <!-- 聊天消息将通过JavaScript动态加载 -->
+                            <div class="system-message">系统已准备就绪，请输入您的问题。</div>
+                        </div>
+                        <div class="input-group mt-3">
+                            <input type="text" class="form-control" id="messageInput" placeholder="输入您的问题...">
+                            <button class="btn btn-primary" id="sendBtn">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4 mb-4" id="settings">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">系统设置</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="settingsForm">
+                            <h6>RAG 设置</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="workingDir" class="form-label">工作目录</label>
+                                    <input type="text" class="form-control" id="workingDir" name="rag.workingDir">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputDir" class="form-label">输入目录</label>
+                                    <input type="text" class="form-control" id="inputDir" name="rag.inputDir">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="maxTokens" class="form-label">最大Token数</label>
+                                    <input type="number" class="form-control" id="maxTokens" name="rag.maxTokens">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="maxEmbedTokens" class="form-label">最大嵌入Token数</label>
+                                    <input type="number" class="form-control" id="maxEmbedTokens" name="rag.maxEmbedTokens">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="chunkSize" class="form-label">分块大小</label>
+                                    <input type="number" class="form-control" id="chunkSize" name="rag.chunkSize">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="chunkOverlap" class="form-label">分块重叠</label>
+                                    <input type="number" class="form-control" id="chunkOverlap" name="rag.chunkOverlap">
+                                </div>
+                            </div>
+
+                            <h6 class="mt-4">LLM 设置</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="llmProvider" class="form-label">提供商</label>
+                                    <select class="form-select" id="llmProvider" name="llm.provider">
+                                        <option value="openai">OpenAI</option>
+                                        <option value="ollama">Ollama</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="llmModel" class="form-label">模型</label>
+                                    <input type="text" class="form-control" id="llmModel" name="llm.model">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="llmApiKey" class="form-label">API密钥</label>
+                                    <input type="password" class="form-control" id="llmApiKey" name="llm.apiKey" placeholder="留空则保持不变">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="llmBaseUrl" class="form-label">API基础URL</label>
+                                    <input type="text" class="form-control" id="llmBaseUrl" name="llm.baseUrl" placeholder="例如: https://api.openai.com/v1">
+                                </div>
+                            </div>
+
+                            <h6 class="mt-4">嵌入模型设置</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="embeddingProvider" class="form-label">提供商</label>
+                                    <select class="form-select" id="embeddingProvider" name="embedding.provider">
+                                        <option value="openai">OpenAI</option>
+                                        <option value="ollama">Ollama</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="embeddingModel" class="form-label">模型</label>
+                                    <input type="text" class="form-control" id="embeddingModel" name="embedding.model">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="embeddingApiKey" class="form-label">API密钥</label>
+                                    <input type="password" class="form-control" id="embeddingApiKey" name="embedding.apiKey" placeholder="留空则保持不变">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="embeddingBaseUrl" class="form-label">API基础URL</label>
+                                    <input type="text" class="form-control" id="embeddingBaseUrl" name="embedding.baseUrl" placeholder="例如: https://api.openai.com/v1">
+                                </div>
+                            </div>
+
+                            <h6 class="mt-4">存储设置</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="vectorType" class="form-label">向量存储类型</label>
+                                    <select class="form-select" id="vectorType" name="storage.vectorType">
+                                        <option value="memory">内存</option>
+                                        <option value="postgres">PostgreSQL</option>
+                                        <option value="milvus">Milvus</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="kvType" class="form-label">KV存储类型</label>
+                                    <select class="form-select" id="kvType" name="storage.kvType">
+                                        <option value="memory">内存</option>
+                                        <option value="postgres">PostgreSQL</option>
+                                        <option value="mongo">MongoDB</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="graphType" class="form-label">图存储类型</label>
+                                    <select class="form-select" id="graphType" name="storage.graphType">
+                                        <option value="memory">内存</option>
+                                        <option value="neo4j">Neo4j</option>
+                                        <option value="postgres">PostgreSQL</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mt-4">服务器设置</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="serverApiKey" class="form-label">API密钥</label>
+                                    <input type="password" class="form-control" id="serverApiKey" name="server.apiKey" placeholder="留空则不启用API认证">
+                                    <div class="form-text">设置API密钥后，所有API请求都需要提供此密钥进行认证</div>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn btn-primary">保存设置</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">Go-LightRAG &copy; 2023-2024</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

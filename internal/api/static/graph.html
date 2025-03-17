@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识图谱可视化 - Go-LightRAG</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/vis-network.css">
+    <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/vis-network.min.js"></script>
+    <style>
+        #mynetwork {
+            width: 100%;
+            height: 80vh;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+        .controls {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Go-LightRAG</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#documents">文档管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#chat">聊天</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/static/graph.html">知识图谱</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/#settings">设置</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">知识图谱可视化</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="controls">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <label class="input-group-text" for="graphSelect">选择图谱</label>
+                                        <select class="form-select" id="graphSelect">
+                                            <option selected>请选择知识图谱...</option>
+                                            <!-- 图谱列表将通过JavaScript动态加载 -->
+                                        </select>
+                                        <button class="btn btn-primary" id="loadGraphBtn">加载</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="searchNode" placeholder="搜索节点...">
+                                        <button class="btn btn-outline-secondary" type="button" id="searchBtn">搜索</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mynetwork"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-4 py-3 bg-light">
+        <div class="container text-center">
+            <p class="mb-0">Go-LightRAG &copy; 2024 - 轻量级RAG系统</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/graph.js"></script>

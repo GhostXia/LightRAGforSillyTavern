@@ -1,0 +1,65 @@
+# Go-LightRAG 配置文件
+
+# 服务器配置
+server:
+  host: "0.0.0.0"  # 服务器监听地址，0.0.0.0表示监听所有网络接口
+  port: 9621       # 服务器端口
+  api_key: ""      # API密钥，留空表示不启用认证
+
+# RAG系统配置
+rag:
+  working_dir: "./rag_storage"  # RAG工作目录，用于存储索引和缓存
+  input_dir: "./inputs"         # 输入文档目录，已包含示例文档
+  max_tokens: 32768             # 最大token数量（推荐值：8192-32768）
+  max_embed_tokens: 8192        # 最大嵌入token数量（推荐值：4096-8192）
+  chunk_size: 1024              # 文本分块大小（推荐值：512-2048，较小值适合精确检索，较大值适合长文本理解）
+  chunk_overlap: 128            # 文本分块重叠大小（推荐值：64-256，通常为chunk_size的10%-20%）
+  top_k: 60                     # 检索结果数量（推荐值：30-100，增大可提高召回率，减小可提高精确度）
+  entity_summary_size: 4000     # 实体摘要大小（推荐值：2000-6000）
+
+# LLM配置
+llm:
+  provider: "openai"                      # 提供商：openai, ollama等
+  model: "gpt-4o-mini"                    # 模型名称（推荐：gpt-4o-mini, gpt-4o, gpt-3.5-turbo等）
+  api_key: "sk-your-openai-api-key"       # 请替换为您的OpenAI API密钥，否则无法正常使用
+  base_url: "https://api.openai.com/v1"   # API基础URL（使用OpenAI时保持默认，使用代理时可修改）
+
+# 嵌入模型配置
+embedding:
+  provider: "openai"                      # 提供商：openai, ollama等
+  model: "text-embedding-3-large"         # 模型名称（推荐：text-embedding-3-large, text-embedding-3-small等）
+  api_key: "sk-your-openai-api-key"       # 请替换为您的OpenAI API密钥，否则无法正常使用
+  base_url: "https://api.openai.com/v1"   # API基础URL（使用OpenAI时保持默认，使用代理时可修改）
+
+# 存储配置
+storage:
+  vector_type: "memory"  # 向量存储类型：memory(内存，适合测试和小型应用), postgres(持久化), milvus(高性能向量搜索)等
+  kv_type: "memory"      # KV存储类型：memory(内存，适合测试和小型应用), postgres(关系型数据库), mongo(文档型数据库)等
+  graph_type: "memory"   # 图存储类型：memory(内存，适合测试和小型应用), neo4j(专业图数据库), postgres(关系型数据库)等
+  
+  # 以下配置仅在使用相应存储类型时需要设置
+  # Neo4j配置（当graph_type为"neo4j"时使用）
+  neo4j:
+    uri: "bolt://localhost:7687"
+    username: "neo4j"
+    password: "password"
+    database: "neo4j"
+  
+  # PostgreSQL配置（当使用postgres作为任意存储类型时使用）
+  postgres:
+    host: "localhost"
+    port: 5432
+    username: "postgres"
+    password: "password"
+    database: "lightrag"
+    ssl_mode: "disable"
+  
+  # MongoDB配置（当kv_type为"mongo"时使用）
+  mongo:
+    uri: "mongodb://localhost:27017"
+    database: "lightrag"
+  
+  # Milvus配置（当vector_type为"milvus"时使用）
+  milvus:
+    host: "localhost"
+    port: 19530
